@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Forgive Me Maalkin Ji 🥺</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0; padding: 0; background: #0a0005; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; touch-action: none; font-family: 'Montserrat', sans-serif;
+        }
+
+        /* --- Floating "Sorry na..." Texts --- */
+        .floating-name {
+            position: absolute; color: #ff007f; opacity: 0.2;
+            font-family: 'Dancing Script', cursive; font-size: 1.4rem;
+            white-space: nowrap; pointer-events: none; z-index: 1;
+            animation: float-bg linear infinite;
+        }
+
+        @keyframes float-bg {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(50px, -50px) rotate(5deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        /* --- Heart & Progress UI --- */
+        #heart-container {
+            font-size: 110px; cursor: pointer; user-select: none;
+            transition: transform 0.2s; z-index: 100;
+            filter: drop-shadow(0 0 30px #ff007f);
+        }
+
+        #heart-container:active { transform: scale(1.4); }
+
+        #progress-wrapper {
+            width: 260px; height: 8px; background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px; margin-top: 30px; overflow: hidden;
+            border: 1px solid rgba(255, 0, 127, 0.4); z-index: 100;
+        }
+
+        #progress-bar {
+            width: 0%; height: 100%; background: linear-gradient(90deg, #ff007f, #ff69b4);
+            transition: width 0.1s linear;
+        }
+
+        #maaf-msg {
+            color: #ffb7c5; font-size: 1.1rem; font-weight: bold;
+            margin-top: 25px; text-align: center; opacity: 0.9; z-index: 100;
+            text-shadow: 0 0 10px rgba(255, 183, 197, 0.5);
+            letter-spacing: 1px;
+        }
+
+        /* --- Particles (Sakura & Rings) --- */
+        .particle {
+            position: absolute; pointer-events: none; z-index: 50;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-layer"></div>
+
+    <div id="heart-container">💖</div>
+
+    <div id="progress-wrapper">
+        <div id="progress-bar"></div>
+    </div>
+
+    <p id="maaf-msg">AB TOH MAAF KARIYE MERI MAALKIN JI 🥺</p>
+
+    <script>
+        // Custom Sorry Nicknames
+        const sorryMessages = [
+            "Sorry na Maalkin ji", "Sorry na Bayko", "Sorry na Siya", 
+            "Sorry na My Wife", "Sorry na My Angel", "Sorry na My World", 
+            "Sorry na My Everything", "Maan jao na Boss"
+        ];
+        
+        const rainSymbols = ["🌸", "💍", "🌸", "🌸", "💍", "✨", "❤️"];
+        const bgLayer = document.getElementById('bg-layer');
+        const heart = document.getElementById('heart-container');
+        const bar = document.getElementById('progress-bar');
+        const messageText = document.getElementById('maaf-msg');
+        
+        let progress = 0;
+        let holdTimer;
+
+        // Create Background Floating "Sorry" messages
+        function createFloatingSorry() {
+            const span = document.createElement('span');
+            span.className = 'floating-name';
+            span.innerText = sorryMessages[Math.floor(Math.random() * sorryMessages.length)];
+            span.style.left = Math.random() * 85 + "vw";
+            span.style.top = Math.random() * 90 + "vh";
+            span.style.animationDuration = (Math.random() * 8 + 8) + "s";
+            bgLayer.appendChild(span);
+        }
+
+        // Generate 15 initial floating messages
+        for(let i=0; i<15; i++) createFloatingSorry();
+
+        // Particle Rain Function
+        function spawnRain() {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.innerText = rainSymbols[Math.floor(Math.random() * rainSymbols.length)];
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.fontSize = (Math.random() * 20 + 20) + "px";
+            p.style.animationDuration = (Math.random() * 3 + 2) + "s";
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 4000);
+        }
+
+        function startHolding() {
+            holdTimer = setInterval(() => {
+                if (progress < 100) {
+                    progress += 2; // Speed of progress
+                    bar.style.width = progress + "%";
+                } else {
+                    clearInterval(holdTimer);
+                    messageText.innerText = "YAY! THANK YOU FOR FORGIVING ME! ❤️";
+                    messageText.style.color = "#39ff14"; // Turns Green on success
+                    
+                    // Start Magic Rain
+                    setInterval(spawnRain, 100); 
+
+                    setTimeout(() => {
+                        window.location.href = "https://www.instagram.com/anusiyaplayz/";
+                    }, 5000);
+                }
+            }, 50);
+        }
+
+        function stopHolding() {
+            clearInterval(holdTimer);
+            if (progress < 100) {
+                progress = 0;
+                bar.style.width = "0%";
+            }
+        }
+
+        // Events for Mobile and Desktop
+        heart.addEventListener('mousedown', startHolding);
+        heart.addEventListener('mouseup', stopHolding);
+        heart.addEventListener('touchstart', (e) => { e.preventDefault(); startHolding(); });
+        heart.addEventListener('touchend', stopHolding);
+
+    </script>
+</body>
+</html>
